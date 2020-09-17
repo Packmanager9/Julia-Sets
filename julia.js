@@ -1,7 +1,7 @@
 
 window.addEventListener('DOMContentLoaded', (event) =>{
 
-let r = 4
+let r = 5
 
     let tutorial_canvas = document.getElementById("tutorial");
     let tutorial_canvas_context = tutorial_canvas.getContext('2d');
@@ -15,7 +15,7 @@ let r = 4
             this.y = y
             this.height = height
             this.width = width
-            this.complex = new Complex(((x-tutorial_canvas.width/2)/tutorial_canvas.width)*3.1,((y-tutorial_canvas.height/2)/tutorial_canvas.height)*3.1 )
+            this.complex = new Complex(((x-tutorial_canvas.width/2)/tutorial_canvas.width)*3.5,((y-tutorial_canvas.height/2)/tutorial_canvas.height)*3.5 )
             this.color = 'rgb(0,0,0)'//`rgb(${Math.min(step*12),255)},${Math.max(255-(step*12),0)},${Math.min(step*2),255)})`
         }
         draw(){
@@ -25,16 +25,16 @@ let r = 4
     }
 
 
-class Julia{
-    constructor(){
-        this.points = []
-    }
-    draw(){
-        for(let t = 0; t<this.points; t++){
-            this.points[t].draw()
-        }
-    }
-}
+// class Julia{
+//     constructor(){
+//         this.points = []
+//     }
+//     draw(){
+//         for(let t = 0; t<this.points; t++){
+//             this.points[t].draw()
+//         }
+//     }
+// }
 class Complex{
     constructor(r = 0,i = 0){
         this.imaginary = i
@@ -73,11 +73,14 @@ class Complex{
 }
 
 
-let runner = new Complex(.5, 1)
+// let runner = new Complex(.5, 1)
 
-let punch = new Complex(-.8,.156)
+let punch = new Complex(-.91,.2675)
 
-        console.log(runner)
+punch.real += Math.random()-.5
+punch.imaginary += Math.random()-.5
+
+        // console.log(runner)
 
 // let f = new Rectangle(5,5,5,5,"red")
 
@@ -125,17 +128,22 @@ let punch = new Complex(-.8,.156)
 
 let boxes = []
 
-    window.setInterval(function(){ 
-        tutorial_canvas_context.clearRect(0,0,tutorial_canvas.width, tutorial_canvas.height)
-    boxes = []
 for(let t = 0; t<tutorial_canvas.height; t++){
     let f = []
     boxes.push(f)
 }
+    // window.setInterval(function(){ 
+        tutorial_canvas_context.clearRect(0,0,tutorial_canvas.width, tutorial_canvas.height)
+    boxes = []
+
+for(let t = 0; t<tutorial_canvas.height; t++){
+    
+    boxes[t] = []
+}
 let box 
-for(let t = 0; t<boxes.length; t+=4){
-    for(let k = 0; k<tutorial_canvas.width;k+=4){
-        box = new Rectangle(k,t, 4,4, "red")
+for(let t = 0; t<boxes.length; t++){
+    for(let k = 0; k<tutorial_canvas.width;k++){
+        box = new Rectangle(k,t, 1,1, "red")
         boxes[t].push(box)
     }
 }
@@ -145,14 +153,28 @@ for(let t = 0; t<boxes.length; t+=4){
 for(let t = 0; t<boxes.length; t++){
     for(let k = 0; k<boxes[t].length;k++){
         let iet = 0
+         let a = 0
+         //adjust iterations if needed
         while( iet<1255 && ((boxes[t][k].complex.real*boxes[t][k].complex.real)-(boxes[t][k].complex.imaginary*boxes[t][k].complex.imaginary))<r*r){
         iet++
         let xtemp = (boxes[t][k].complex.real  * boxes[t][k].complex.real)  - (boxes[t][k].complex.imaginary  * boxes[t][k].complex.imaginary) 
         boxes[t][k].complex.imaginary = (2 * boxes[t][k].complex.real  * boxes[t][k].complex.imaginary)   + punch.imaginary 
         boxes[t][k].complex.real = xtemp + punch.real
-        boxes[t][k].color = `rgb(${Math.min((iet*15),255)},${Math.max(255-(iet*3),0)},0)`
+       
+        // set a to 1 below this set of if blocks, to make all pixels visable
+        a+=.06
+        if(a>.48){
+            a=1
+        }
 
         }
+        if(a < .5){
+            a=0
+        }
+
+            a=1 // turn off for transparencies, right click the canvas to save
+        boxes[t][k].color = `rgb(${Math.min((iet*15),255)},${Math.max(255-(iet*3),0)}, ${0}, ${a}`
+
     }
 }
 
@@ -165,13 +187,14 @@ for(let t = 0; t<boxes.length; t++){
     }
 }
 
-punch.real-=.001
-punch.imaginary+=.0001
+// punch.real-=.01 // real component
+punch.imaginary+=.01 // imaginary component
         // tutorial_canvas_context.translate(350,350)
         // tutorial_canvas_context.rotate(.001)
         // tutorial_canvas_context.translate(-350,-350)
         // tutorial_canvas_context.scale(1.01,1.01)
-// console.log(boxes)
-    },  200) 
+        // console.log(boxes)
+    // },  200) 
+     // turn on the interval to make it move(takes a lot of computer power)
 
 })
